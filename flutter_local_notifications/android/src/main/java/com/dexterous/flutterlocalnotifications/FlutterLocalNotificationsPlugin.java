@@ -61,6 +61,8 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
+import android.util.Log;
+
 /**
  * FlutterLocalNotificationsPlugin
  */
@@ -246,12 +248,14 @@ public class FlutterLocalNotificationsPlugin implements MethodCallHandler, Plugi
         Intent notificationIntent = new Intent(context, ScheduledNotificationReceiver.class);
         notificationIntent.putExtra(NOTIFICATION_DETAILS, notificationDetailsJson);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notificationDetails.id, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
+        Log.v("DEBUGGING", "notificationDetails.millisecondsSinceEpoch: " + String.valueOf(notificationDetails.millisecondsSinceEpoch));
         AlarmManager alarmManager = getAlarmManager(context);
         if (BooleanUtils.getValue(notificationDetails.allowWhileIdle)) {
             AlarmManagerCompat.setExactAndAllowWhileIdle(alarmManager, AlarmManager.RTC_WAKEUP, notificationDetails.millisecondsSinceEpoch, pendingIntent);
+            Log.v("DEBUGGING", "setExactAndAllowWhileIdle");
         } else {
             AlarmManagerCompat.setExact(alarmManager, AlarmManager.RTC_WAKEUP, notificationDetails.millisecondsSinceEpoch, pendingIntent);
+            Log.v("DEBUGGING", "setExact");
         }
 
         if (updateScheduledNotificationsCache) {
