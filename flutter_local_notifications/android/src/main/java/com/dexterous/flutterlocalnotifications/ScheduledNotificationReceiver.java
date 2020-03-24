@@ -13,6 +13,8 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 
+import android.util.Log;
+
 /**
  * Created by michaelbui on 24/3/18.
  */
@@ -25,9 +27,10 @@ public class ScheduledNotificationReceiver extends BroadcastReceiver {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         String notificationDetailsJson = intent.getStringExtra(FlutterLocalNotificationsPlugin.NOTIFICATION_DETAILS);
         boolean repeat = intent.getBooleanExtra(FlutterLocalNotificationsPlugin.REPEAT, false);
-
+        Log.v("DEBUGGING", "onReceive notificationDetailsJson:" + notificationDetailsJson);
         // TODO: remove this branching logic as it's legacy code to fix an issue where notifications weren't reporting the correct time
         if(StringUtils.isNullOrEmpty(notificationDetailsJson)) {
+            Log.v("DEBUGGING", "onReceive1");
             Notification notification = intent.getParcelableExtra(FlutterLocalNotificationsPlugin.NOTIFICATION);
             notification.when = System.currentTimeMillis();
             int notificationId = intent.getIntExtra(FlutterLocalNotificationsPlugin.NOTIFICATION_ID,
@@ -38,6 +41,7 @@ public class ScheduledNotificationReceiver extends BroadcastReceiver {
             }
             FlutterLocalNotificationsPlugin.removeNotificationFromCache(notificationId, context);
         } else {
+            Log.v("DEBUGGING", "onReceive2");
             Gson gson = FlutterLocalNotificationsPlugin.buildGson();
             Type type = new TypeToken<NotificationDetails>() {
             }.getType();
